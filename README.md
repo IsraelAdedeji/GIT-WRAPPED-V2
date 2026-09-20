@@ -13,3 +13,11 @@ In case you want to run it locally, here are the steps you should follow:
 4. Run index.html in your browser/live server
 
 ## Images
+
+<img width="694" height="613" alt="Screenshot 2026-09-20 143317" src="https://github.com/user-attachments/assets/98411fdf-53e7-4475-b339-72c6bd95ef79" />
+
+<img width="795" height="519" alt="Screenshot 2026-09-20 143415" src="https://github.com/user-attachments/assets/a9b6cc37-f1df-4484-b2d1-7f1d57057c4e" />
+
+<img width="416" height="422" alt="Screenshot 2026-09-20 143809" src="https://github.com/user-attachments/assets/f8197c86-613c-41e5-a554-6686e186ac12" />
+
+## Try the Live Demo Here: https://git-wrapped-v2.vercel.app/
