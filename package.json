@@ -1,0 +1,8 @@
+{
+    "name": "GIT WRAPPED",
+    "version": "1.0.0",
+    "description": "Your coding history, told as a story.",
+    "scripts": {
+        "build": "node build.js"
+    }
+}
