@@ -191,16 +191,16 @@ function buildSlides(d) {
 
     // Final slide — Certificate preview + Download + Profile Link
     slides.push({
-        label: 'You earned this',
+        label: 'You done a lot of Great Work!',
         html: `
         <div class="big gradient-text">Your GitWrapped Card</div>
         <div class="sub">A snapshot of your developer journey. Download and share it.</div>
         <div class="final-actions">
         <button id="download-btn" class="action-btn primary-action">
-            📸 Download My Card
+            Download My Card
         </button>
         <a href="https://github.com/${d.username}" target="_blank" rel="noopener noreferrer" class="action-btn secondary-action">
-            👤 View GitHub Profile
+            View GitHub Profile
         </a>
         </div>
     `,
@@ -298,7 +298,7 @@ async function downloadShareCard() {
     } catch (err) {
         console.error('Download failed:', err);
     } finally {
-        if (btn) { btn.disabled = false; btn.textContent = '📸 Download My Card'; }
+        if (btn) { btn.disabled = false; btn.textContent = 'Download My Card'; }
     }
 }
 

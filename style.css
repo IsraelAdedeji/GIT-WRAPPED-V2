@@ -7,11 +7,12 @@
 :root {
     --bg: #06060a;
     --card: rgba(18, 18, 26, 0.7);
-    --accent: #7c3aed;
-    --accent-2: #06b6d4;
-    --accent-3: #ec4899;
+    --color: #7c3aed;
+    --color2: #06b6d4;
+    --color3: #ec4899;
     --text: #f5f5f7;
-    --muted: #8b8b9a;
+    --disguised: #8b8b9a;
+    --bg2: rgba(0, 0, 50, 0.6);
     --border: rgba(255, 255, 255, 0.08);
 }
 
@@ -20,7 +21,7 @@ body {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background: var(--bg);
+    background: linear-gradient(90deg, var(--bg), var(--bg2));
 }
 
 body {
@@ -29,49 +30,7 @@ body {
     position: relative;
 }
 
-/* ============ ANIMATED AURORA BACKGROUND ============ */
-body::before,
-body::after {
-    content: '';
-    position: fixed;
-    border-radius: 50%;
-    filter: blur(120px);
-    opacity: 0.35;
-    z-index: 0;
-    pointer-events: none;
-    animation: float 20s ease-in-out infinite;
-}
-
-body::before {
-    width: 600px;
-    height: 600px;
-    background: var(--accent);
-    top: -200px;
-    left: -200px;
-}
-
-body::after {
-    width: 500px;
-    height: 500px;
-    background: var(--accent-2);
-    bottom: -200px;
-    right: -200px;
-    animation-delay: -10s;
-}
-
-@keyframes float {
-
-    0%,
-    100% {
-        transform: translate(0, 0) scale(1);
-    }
-
-    50% {
-        transform: translate(80px, 60px) scale(1.15);
-    }
-}
-
-/* ============ SCREENS ============ */
+/* SCREENS */
 .screen {
     position: fixed;
     top: 0;
@@ -96,7 +55,7 @@ body::after {
     z-index: 999;
 }
 
-/* ============ INPUT SCREEN ============ */
+/* INPUT SCREEN */
 .input-card {
     text-align: center;
     max-width: 520px;
@@ -104,7 +63,7 @@ body::after {
     padding: 3rem 2rem;
     background: var(--card);
     backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    /* -webkit-backdrop-filter: blur(20px); */
     border: 1px solid var(--border);
     border-radius: 24px;
     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
@@ -132,28 +91,15 @@ body::after {
 }
 
 .logo span {
-    background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
+    background: linear-gradient(90deg, var(--color), var(--color2));
     background-size: 200% 200%;
-    animation: gradientShift 4s ease infinite;
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
-@keyframes gradientShift {
-
-    0%,
-    100% {
-        background-position: 0% 50%;
-    }
-
-    50% {
-        background-position: 100% 50%;
-    }
-}
-
 .tagline {
-    color: var(--muted);
+    color: var(--disguised);
     margin-bottom: 2.5rem;
     font-size: 1rem;
 }
@@ -169,7 +115,7 @@ body::after {
 }
 
 .input-row:focus-within {
-    border-color: var(--accent);
+    border-color: var(--color);
     box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.15);
 }
 
@@ -185,7 +131,7 @@ body::after {
 }
 
 #generate-btn {
-    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    background: linear-gradient(90deg, var(--color), var(--color2));
     color: white;
     border: none;
     border-radius: 10px;
@@ -208,7 +154,7 @@ body::after {
 }
 
 .hint {
-    color: var(--muted);
+    color: var(--disguised);
     font-size: 0.85rem;
     margin-top: 1.2rem;
 }
@@ -220,7 +166,7 @@ body::after {
     min-height: 1.2rem;
 }
 
-/* ============ LOADING ============ */
+/* LOADING */
 .loader {
     text-align: center;
     z-index: 2;
@@ -230,8 +176,8 @@ body::after {
     width: 56px;
     height: 56px;
     border: 4px solid rgba(255, 255, 255, 0.1);
-    border-top-color: var(--accent);
-    border-right-color: var(--accent-2);
+    border-top-color: var(--color);
+    border-right-color: var(--color2);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
     margin: 0 auto 1.5rem;
@@ -244,10 +190,10 @@ body::after {
 }
 
 .loader p {
-    color: var(--muted);
+    color: var(--disguised);
 }
 
-/* ============ STORY SCREEN ============ */
+/* STORY SCREEN */
 #screen-story.active {
     justify-content: space-between;
     padding: 2rem 0;
@@ -285,7 +231,7 @@ body::after {
 }
 
 .slide .label {
-    color: var(--muted);
+    color: var(--disguised);
     font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 3px;
@@ -302,7 +248,7 @@ body::after {
 }
 
 .slide .sub {
-    color: var(--muted);
+    color: var(--disguised);
     font-size: 1.1rem;
     max-width: 500px;
     line-height: 1.6;
@@ -312,7 +258,7 @@ body::after {
     width: 140px;
     height: 140px;
     border-radius: 50%;
-    border: 3px solid var(--accent);
+    border: 3px solid var(--color);
     margin-bottom: 1.5rem;
     box-shadow: 0 0 60px rgba(124, 58, 237, 0.5);
     animation: pulse 3s ease-in-out infinite;
@@ -331,7 +277,7 @@ body::after {
 }
 
 .gradient-text {
-    background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
+    background: linear-gradient(90deg, var(--color), var(--color2), var(--color3));
     background-size: 200% 200%;
     animation: gradientShift 5s ease infinite;
     -webkit-background-clip: text;
@@ -351,7 +297,7 @@ body::after {
 }
 
 .lang-pill span {
-    color: var(--muted);
+    color: var(--disguised);
     font-weight: 400;
     font-size: 0.9rem;
 }
@@ -399,8 +345,8 @@ body::after {
 }
 
 .nav-btn:hover:not(:disabled) {
-    background: var(--accent);
-    border-color: var(--accent);
+    background: var(--color);
+    border-color: var(--color2);
     transform: scale(1.1);
     box-shadow: 0 0 25px rgba(124, 58, 237, 0.6);
 }
@@ -425,7 +371,7 @@ body::after {
 }
 
 .dot.active {
-    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    background: linear-gradient(90deg, var(--color), var(--color2));
     width: 28px;
     border-radius: 4px;
     box-shadow: 0 0 15px rgba(124, 58, 237, 0.7);
@@ -450,10 +396,10 @@ body::after {
 
 .restart:hover {
     color: var(--text);
-    border-color: var(--accent);
+    border-color: var(--color);
 }
 
-/* ============ SHARE CARD (hidden, used for download) ============ */
+/* SHARE CARD */
 #share-card-container {
     position: fixed;
     left: -99999px;
@@ -624,7 +570,7 @@ body::after {
 }
 
 .bio-item {
-    color: var(--muted);
+    color: var(--disguised);
     font-size: 0.95rem;
     margin: 0.5rem 0;
     display: flex;
@@ -632,7 +578,7 @@ body::after {
     gap: 0.5rem;
 }
 
-/* ============ SHARE CARD UPDATES ============ */
+/* SHARE CARD UPDATES */
 .share-bio {
     font-size: 0.8rem;
     font-style: italic;
@@ -666,7 +612,7 @@ body::after {
     letter-spacing: -0.5px;
 }
 
-/* ============ FINAL SLIDE ACTIONS ============ */
+/* FINAL SLIDE ACTIONS */
 .final-actions {
     display: flex;
     gap: 1rem;
@@ -691,7 +637,7 @@ body::after {
 }
 
 .primary-action {
-    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    background: linear-gradient(90deg, var(--color), var(--color2));
     color: white;
     box-shadow: 0 10px 30px rgba(124, 58, 237, 0.4);
 }
@@ -718,7 +664,7 @@ body::after {
 .secondary-action:hover {
     background: rgba(255, 255, 255, 0.1);
     transform: translateY(-2px);
-    border-color: var(--accent);
+    border-color: var(--color);
 }
 
 /* ============ MOBILE ============ */
