@@ -1,11 +1,11 @@
 const GITHUB_API = 'https://api.github.com';
 
-// ============ STATE ============
+// STATE
 let storyData = null;
 let currentSlide = 0;
 let slides = [];
 
-// ============ DOM ============
+// DOM
 const screens = {
     input: document.getElementById('screen-input'),
     loading: document.getElementById('screen-loading'),
@@ -22,13 +22,13 @@ const nextBtn = document.getElementById('next-btn');
 const restartBtn = document.getElementById('restart-btn');
 const shareCard = document.getElementById('share-card');
 
-// ============ SCREEN MANAGEMENT ============
+// SCREEN MANAGEMENT
 function showScreen(name) {
     Object.values(screens).forEach(s => s.classList.remove('active'));
     if (screens[name]) screens[name].classList.add('active');
 }
 
-// ============ GITHUB API ============
+// GITHUB API
 async function ghFetch(path, signal) {
     const res = await fetch(`${GITHUB_API}${path}`, {
         headers: {
@@ -68,7 +68,7 @@ async function fetchUserData(username, signal) {
     };
 }
 
-// ============ ARCHETYPE ALGORITHM ============
+// ARCHETYPE ALGORITHM
 function determineArchetype(d) {
     const langs = d.topLanguages.map(l => l[0].toLowerCase());
     const totalLangs = d.topLanguages.length;
@@ -94,7 +94,7 @@ function determineArchetype(d) {
     return { title: "The Code Explorer", emoji: "🧭", desc: "You're on a journey, learning and building one commit at a time." };
 }
 
-// ============ SLIDE BUILDERS ============
+// SLIDE BUILDERS
 function buildSlides(d) {
     const slides = [];
 
@@ -103,7 +103,6 @@ function buildSlides(d) {
         html: `<img src="${d.avatar}" alt="${d.username}" class="avatar" /><div class="big gradient-text">${d.name}</div><div class="sub">@${d.username}</div>`,
     });
 
-    // Slide 2: Bio Card (Only if they have a bio/company/location)
     if (d.bio || d.company || d.location || d.blog || d.twitter) {
         const bioItems = [];
         if (d.bio) bioItems.push(`<div class="bio-text">"${d.bio}"</div>`);
@@ -118,7 +117,6 @@ function buildSlides(d) {
         });
     }
 
-    // Slide 3: Archetype
     const archetype = determineArchetype(d);
     slides.push({
         label: 'Your developer DNA',
@@ -189,7 +187,6 @@ function buildSlides(d) {
         });
     }
 
-    // Final slide — Certificate preview + Download + Profile Link
     slides.push({
         label: 'You done a lot of Great Work!',
         html: `
@@ -209,7 +206,7 @@ function buildSlides(d) {
     return slides;
 }
 
-// ============ SHARE CARD BUILDER ============
+// SHARE CARD BUILDER
 function buildShareCard(d) {
     const topLang = d.topLanguages[0] ? d.topLanguages[0][0] : 'Code';
     const archetype = determineArchetype(d);
@@ -261,7 +258,7 @@ function buildShareCard(d) {
     </div>
     `;
 }
-// ============ RENDER STORY ============
+// RENDER STORY
 function renderStory() {
     slides = buildSlides(storyData);
     slideContainer.innerHTML = slides.map((s, i) => `
@@ -279,7 +276,7 @@ function renderStory() {
     buildShareCard(storyData);
 }
 
-// ============ DOWNLOAD (event delegation = no duplicates) ============
+// DOWNLOAD
 async function downloadShareCard() {
     const btn = document.getElementById('download-btn');
     if (btn) { btn.disabled = true; btn.textContent = '⏳ Rendering...'; }
@@ -302,7 +299,6 @@ async function downloadShareCard() {
     }
 }
 
-// Single global listener (fixes the multi-download bug)
 document.addEventListener('click', (e) => {
     if (e.target.closest('#download-btn')) {
         e.preventDefault();
@@ -310,7 +306,7 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// ============ NAVIGATION ============
+// NAVIGATION
 function goToSlide(index) {
     document.querySelectorAll('.slide')[currentSlide]?.classList.remove('active');
     document.querySelectorAll('.dot')[currentSlide]?.classList.remove('active');
@@ -325,7 +321,7 @@ function updateControls() {
     nextBtn.disabled = currentSlide === slides.length - 1;
 }
 
-// ============ EVENT HANDLERS ============
+// EVENT HANDLERS
 async function handleGenerate() {
     const username = usernameInput.value.trim();
 
