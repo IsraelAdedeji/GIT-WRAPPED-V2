@@ -94,6 +94,31 @@ function determineArchetype(d) {
     return { title: "The Code Explorer", emoji: "🧭", desc: "You're on a journey, learning and building one commit at a time." };
 }
 
+const startBtn = document.getElementById("start-btn");
+
+setTimeout(() => {
+    if (startBtn) {
+        startBtn.classList.remove('hidden');
+        startBtn.style.opacity = '0';
+        startBtn.style.transition = 'opacity 0.5s ease';
+        setTimeout(() => {startBtn.style.opacity = '1';}, 50);
+    }
+}, 1500);
+
+if (startBtn) {
+    startBtn.addEventListener('click', () => {
+        const wipe = document.createElement('div');
+        wipe.classList.add('wipe-overlay', 'wipe-active');
+        document.body.appendChild(wipe);
+
+        setTimeout(() => {
+            showScreen('input');
+            wipe.remove();
+            
+        }, 3500);
+    });
+}
+
 // SLIDE BUILDERS
 function buildSlides(d) {
     const slides = [];

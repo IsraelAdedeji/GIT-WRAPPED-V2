@@ -12,7 +12,7 @@
     --color3: #ec4899;
     --text: #f5f5f7;
     --disguised: #8b8b9a;
-    --bg2: rgba(0, 0, 50, 0.6);
+    --bg2: rgba(33, 9, 119, 0.6);
     --border: rgba(255, 255, 255, 0.08);
 }
 
@@ -21,7 +21,7 @@ body {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background: linear-gradient(90deg, var(--bg), var(--bg2));
+    background: linear-gradient(90deg, rgb(11, 2, 22), rgb(2, 68, 2));
 }
 
 body {
@@ -30,7 +30,101 @@ body {
     position: relative;
 }
 
-/* SCREENS */
+.screen-intro {
+    background-color: rgb(10, 10, 10);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.pixel-window {
+    border: 4px solid rgb(0, 255, 65);
+    background: rgb(17, 17, 17);
+    padding: 3rem 4rem;
+    text-align: center;
+    clip-path: inset(0 50% 0 50%);
+    animation: openWindow 1.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+}
+
+@keyframes openWindow {
+    0% {
+        clip-path: inset(0 50% 0 50%);
+        opacity: 0;
+    }
+
+    100% {
+        clip-path: inset(0% 0 0% 0);
+        opacity: 1;
+    }
+}
+
+.pixel-title {
+    font-family: "Press Start 2P", system-ui;
+    font-weight: 400;
+    font-style: normal;
+    color: rgb(0, 255, 65);
+    font-size: 3rem;
+    letter-spacing: 4px;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+}
+
+.pixel-subtitle {
+    font-family: monospace;
+    color: rgb(0, 143, 17);
+    font-size: 1rem;
+}
+
+.pixel-btn {
+    margin-top: 2rem;
+    font-family: "Press Start 2P", system-ui;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 1.2rem;
+    padding: 1rem 2rem;
+    background: transparent;
+    color: rgb(0, 255, 65);
+    border: 2px solid rgb(0, 255, 65);
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: all 0.2s;
+}
+
+.pixel-btn:hover {
+    background: rgb(0, 255, 65);
+    color: rgb(10, 10, 10);
+    box-shadow: 0 0 15px rgb(0, 255, 65);
+}
+
+.hidden {
+    display: none !important;
+}
+
+.wipe-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: black;
+    z-index: 9999;
+    pointer-events: none;
+    transform: translateY(-100%);
+}
+
+.wipe-active {
+    animation: wipeDown 3.5s ease-in forwards;
+}
+
+@keyframes wipeDown {
+    0% { transform: scaleY(-100%);}
+    100% { transform: scaleY(100%);}
+}
+
 .screen {
     position: fixed;
     top: 0;
@@ -55,7 +149,6 @@ body {
     z-index: 999;
 }
 
-/* INPUT SCREEN */
 .input-card {
     text-align: center;
     max-width: 520px;

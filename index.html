@@ -7,13 +7,13 @@
     <title>GitWrapped — Your Coding Story</title>
     <link rel="stylesheet" href="style.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 
 <body>
-
-    <!-- INPUT SCREEN -->
-
-    <section id="screen-input" class="screen active">
+    <section id="screen-input" class="screen">
         <div class="input-card">
             <h1 class="logo">Git<span>Wrapped</span></h1>
             <p class="tagline">Your coding history, told as a story.</p>
@@ -26,8 +26,6 @@
         </div>
     </section>
 
-    <!-- LOADING SCREEN -->
-
     <section id="screen-loading" class="screen">
         <div class="loader">
             <div class="spinner"></div>
@@ -35,16 +33,12 @@
         </div>
     </section>
 
-    <!-- STORY SCREEN -->
-
     <section id="screen-story" class="screen">
         <button id="restart-btn" class="restart">Start Over</button>
         <div class="slide-container" id="slide-container">
 
-            <!-- Slides injected by JS -->
-
         </div>
-        
+
         <div class="controls">
             <button id="prev-btn" class="nav-btn">←</button>
             <div class="progress-dots" id="progress-dots"></div>
@@ -52,14 +46,19 @@
         </div>
     </section>
 
-    <!-- SHARE CARD -->
-
     <div id="share-card-container">
         <div id="share-card">
-            <!-- Added by JS -->
+
         </div>
     </div>
 
+    <section id="screen-intro" class="screen active">
+        <div class="pixel-window" id="pixel-window">
+            <h1 class="pixel-title">GitWrapped</h1>
+            <p class="pixel-subtitle">Your Git Profile Buddy</p>
+        </div>
+        <button id="start-btn" class="pixel-btn hidden">START</button>
+    </section>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="config.js"></script>
