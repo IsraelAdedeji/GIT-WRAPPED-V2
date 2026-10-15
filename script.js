@@ -10,6 +10,7 @@ const screens = {
     input: document.getElementById('screen-input'),
     loading: document.getElementById('screen-loading'),
     story: document.getElementById('screen-story'),
+    intro: document.getElementById('screen-intro'),
 };
 
 const usernameInput = document.getElementById('username-input');
@@ -101,23 +102,82 @@ setTimeout(() => {
         startBtn.classList.remove('hidden');
         startBtn.style.opacity = '0';
         startBtn.style.transition = 'opacity 0.5s ease';
-        setTimeout(() => {startBtn.style.opacity = '1';}, 50);
+        setTimeout(() => { startBtn.style.opacity = '1'; }, 50);
     }
 }, 1500);
 
 if (startBtn) {
     startBtn.addEventListener('click', () => {
         const wipe = document.createElement('div');
-        wipe.classList.add('wipe-overlay', 'wipe-active');
+        wipe.classList.add('wipe-overlay', 'wipe-down');
         document.body.appendChild(wipe);
 
         setTimeout(() => {
             showScreen('input');
-            wipe.remove();
-            
-        }, 3500);
+            try {
+                startIntroSequence();
+            } catch (error) {
+                console.error("Character Intro Failed", error);
+            }
+            wipe.classList.remove('wipe-down');
+            wipe.classList.add('wipe-up');
+
+            setTimeout(() => {
+                wipe.remove();
+            }, 4000);
+        }, 2000);
     });
 }
+
+const characterOverlay = document.getElementById('character-overlay');
+const dialogueText = document.getElementById('dialogue-text');
+const dialogueNext = document.getElementById('dialogue-next');
+const inputCard = document.getElementById('input-card');
+
+let currentDialogue = [];
+let dialogueIndex = 0;
+let onDialogueComplete = null;
+
+// function startDialogue(lines, callback) {
+//     currentDialogue = lines;
+//     dialogueIndex = 0;
+//     onDialogueComplete = callback || null;
+
+//     dialogueText.textContent = currentDialogue[0];
+//     characterOverlay.classList.add('hidden');
+
+//     dialogueIndex.disabled = false;
+// }
+
+const introDialogue = [
+    "Hey there! ......",
+    "Im GitBot .....",
+    "Enter Username",
+    "Lets seeeee!"
+];
+
+function startIntroSequence() {
+    dialogueIndex = 0;
+    dialogueText.textContent = introDialogue[dialogueIndex];
+    characterOverlay.classList.remove('hidden');
+    // const inputCard = document.getElementById('input-card');
+    inputCard.classList.add('blurred');
+    console.log("blur added")
+
+    // startDialogue(introDialogue, () => {
+    //     inputCard.classList.remove('blurred');
+    // });
+}
+
+dialogueNext.addEventListener('click', () => {
+    dialogueIndex++;
+    if (dialogueIndex < introDialogue.length) {
+        dialogueText.textContent = introDialogue[dialogueIndex];
+    } else {
+        characterOverlay.classList.add('hidden');
+        inputCard.classList.remove('blurred');
+    }
+});
 
 // SLIDE BUILDERS
 function buildSlides(d) {
