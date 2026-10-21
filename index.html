@@ -23,20 +23,12 @@
             <!-- <p class="hint">Try: torvalds, gaearon, sindresorhus</p> -->
             <p id="error-msg" class="error"></p>
         </div>
-
-        <div id="character-overlay" class="character-overlay hidden">
-            <div class="character-art">😀</div>
-            <div class="dialogue-box">
-                <p id="dialogue-text">...</p>
-                <button id="dialogue-next">NEXT</button>
-            </div>
-        </div>
     </section>
 
     <section id="screen-loading" class="screen">
         <div class="loader">
             <div class="spinner"></div>
-            <p>Fetching your story...</p>
+            <p>Working on it, probably...</p>
         </div>
     </section>
 
@@ -46,11 +38,11 @@
 
         </div>
 
-        <div class="controls">
+        <!-- <div class="controls">
             <button id="prev-btn" class="nav-btn">←</button>
             <div class="progress-dots" id="progress-dots"></div>
             <button id="next-btn" class="nav-btn">→</button>
-        </div>
+        </div> -->
     </section>
 
     <div id="share-card-container">
@@ -66,6 +58,17 @@
         </div>
         <button id="start-btn" class="pixel-btn hidden">START</button>
     </section>
+
+    <div id="character-overlay" class="character-overlay hidden">
+        <div class="character-art">😀</div>
+        <div class="dialogue-box">
+            <p id="dialogue-text">...</p>
+            <div class="dialogue-controls">
+                <button id="dialogue-prev" class="hidden">PREV</button>
+                <button id="dialogue-next">NEXT</button>
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="config.js"></script>

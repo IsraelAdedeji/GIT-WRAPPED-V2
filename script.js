@@ -17,11 +17,12 @@ const usernameInput = document.getElementById('username-input');
 const generateBtn = document.getElementById('generate-btn');
 const errorMsg = document.getElementById('error-msg');
 const slideContainer = document.getElementById('slide-container');
-const progressDots = document.getElementById('progress-dots');
-const prevBtn = document.getElementById('prev-btn');
-const nextBtn = document.getElementById('next-btn');
+// const progressDots = document.getElementById('progress-dots');
+// const prevBtn = document.getElementById('prev-btn');
+// const nextBtn = document.getElementById('next-btn');
 const restartBtn = document.getElementById('restart-btn');
 const shareCard = document.getElementById('share-card');
+const dialoguePrev = document.getElementById('dialogue-prev');
 
 // SCREEN MANAGEMENT
 function showScreen(name) {
@@ -132,99 +133,103 @@ if (startBtn) {
 const characterOverlay = document.getElementById('character-overlay');
 const dialogueText = document.getElementById('dialogue-text');
 const dialogueNext = document.getElementById('dialogue-next');
-const inputCard = document.getElementById('input-card');
+// const inputCard = document.getElementById('input-card');
 
 let currentDialogue = [];
 let dialogueIndex = 0;
 let onDialogueComplete = null;
 
-// function startDialogue(lines, callback) {
-//     currentDialogue = lines;
-//     dialogueIndex = 0;
-//     onDialogueComplete = callback || null;
+function startDialogue(lines, callback) {
+    currentDialogue = lines;
+    dialogueIndex = 0;
+    onDialogueComplete = callback || null;
 
-//     dialogueText.textContent = currentDialogue[0];
-//     characterOverlay.classList.add('hidden');
-
-//     dialogueIndex.disabled = false;
-// }
-
-const introDialogue = [
-    "Hey there! ......",
-    "Im GitBot .....",
-    "Enter Username",
-    "Lets seeeee!"
-];
+    dialogueText.textContent = currentDialogue[0];
+    characterOverlay.classList.remove('hidden');
+    dialogueIndex.disabled = false;
+}
 
 function startIntroSequence() {
-    dialogueIndex = 0;
-    dialogueText.textContent = introDialogue[dialogueIndex];
-    characterOverlay.classList.remove('hidden');
-    // const inputCard = document.getElementById('input-card');
-    inputCard.classList.add('blurred');
-    console.log("blur added")
+    const introDialogue = [
+        "Hey there! ......",
+        "Im GitBot .....",
+        "Enter Username",
+        "Lets seeeee!"
+    ];
 
-    // startDialogue(introDialogue, () => {
-    //     inputCard.classList.remove('blurred');
-    // });
+    // dialogueIndex = 0;
+    // dialogueText.textContent = introDialogue[dialogueIndex];
+    // characterOverlay.classList.remove('hidden');
+    const inputCard = document.getElementById('input-card');
+    inputCard.classList.add('blurred');
+    // console.log("blur added")
+
+    startDialogue(introDialogue, () => {
+        inputCard.classList.remove('blurred');
+    });
 }
 
 dialogueNext.addEventListener('click', () => {
+    if (screens.story.classList.contains('active')) {
+        if (currentSlide < slides.length - 1) goToSlide(currentSlide + 1);
+        return;
+    }
+
     dialogueIndex++;
-    if (dialogueIndex < introDialogue.length) {
-        dialogueText.textContent = introDialogue[dialogueIndex];
+    if (dialogueIndex < currentDialogue.length) {
+        dialogueText.textContent = currentDialogue[dialogueIndex];
     } else {
         characterOverlay.classList.add('hidden');
-        inputCard.classList.remove('blurred');
+        // inputCard.classList.remove('blurred');
+        if (onDialogueComplete) onDialogueComplete();
+    }
+});
+
+dialoguePrev.addEventListener('click', () => {
+    if (screens.story.classList.contains('active') && currentSlide > 0) {
+        goToSlide(currentSlide - 1);
     }
 });
 
 // SLIDE BUILDERS
 function buildSlides(d) {
+    const archetype = determineArchetype(d);
     const slides = [];
 
     slides.push({
-        label: 'This is the story of',
+        label: "Target acquired",
         html: `<img src="${d.avatar}" alt="${d.username}" class="avatar" /><div class="big gradient-text">${d.name}</div><div class="sub">@${d.username}</div>`,
+        dialogue: `Target identified. This is ${d.name}. Let's dig into their code.`
     });
 
-    if (d.bio || d.company || d.location || d.blog || d.twitter) {
+    if (d.bio || d.company || d.location) {
         const bioItems = [];
         if (d.bio) bioItems.push(`<div class="bio-text">"${d.bio}"</div>`);
         if (d.company) bioItems.push(`<div class="bio-item">🏢 ${d.company}</div>`);
         if (d.location) bioItems.push(`<div class="bio-item">📍 ${d.location}</div>`);
-        if (d.blog) bioItems.push(`<div class="bio-item">🔗 ${d.blog}</div>`);
-        if (d.twitter) bioItems.push(`<div class="bio-item">🐦 @${d.twitter}</div>`);
-
         slides.push({
-            label: 'Behind the code',
+            label: 'Personal file',
             html: `<div class="big gradient-text">Who is ${d.name.split(' ')[0]}?</div><div class="bio-container">${bioItems.join('')}</div>`,
+            dialogue: `Here's what I dug up on them.`
         });
     }
 
-    const archetype = determineArchetype(d);
     slides.push({
-        label: 'Your developer DNA',
-        html: `
-        <div class="big gradient-text">${archetype.title}</div>
-        <div style="font-size: 4rem; margin: 1rem 0;">${archetype.emoji}</div>
-        <div class="sub">${archetype.desc}</div>
-    `,
+        label: 'Career start',
+        html: `<div class="big gradient-text">${d.joinYear}</div><div class="sub">Joined GitHub ${d.yearsOnGitHub} year${d.yearsOnGitHub === 1 ? '' : 's'} ago.</div>`,
+        dialogue: `They've been at this for ${d.yearsOnGitHub} years. Respect.`
     });
 
     slides.push({
-        label: 'You joined GitHub in',
-        html: `<div class="big gradient-text">${d.joinYear}</div><div class="sub">That's ${d.yearsOnGitHub} year${d.yearsOnGitHub === 1 ? '' : 's'} of shipping code.</div>`,
+        label: 'Repository count',
+        html: `<div class="big gradient-text">${d.publicRepos}</div><div class="sub">public repositories</div>`,
+        dialogue: `${d.publicRepos} public repos. That's a lot of README files.`
     });
 
     slides.push({
-        label: 'You\'ve built',
-        html: `<div class="big gradient-text">${d.publicRepos}</div><div class="sub">public repositories. Each one a story.</div>`,
-    });
-
-    slides.push({
-        label: 'The community has given you',
-        html: `<div class="big gradient-text">${d.totalStars.toLocaleString()}</div><div class="sub">stars across all your projects.</div>`,
+        label: 'Community stars',
+        html: `<div class="big gradient-text">${d.totalStars.toLocaleString()}</div><div class="sub">stars earned</div>`,
+        dialogue: `The community has given them ${d.totalStars.toLocaleString()} stars.`
     });
 
     if (d.topLanguages.length > 0) {
@@ -232,19 +237,20 @@ function buildSlides(d) {
             `<div class="lang-pill">${lang} <span>· ${count}</span></div>`
         ).join('');
         slides.push({
-            label: 'Your top languages',
+            label: 'Language profile',
             html: `<div class="big gradient-text">${d.topLanguages[0][0]}</div><div style="margin-top: 1.5rem;">${pills}</div>`,
+            dialogue: `They speak ${d.topLanguages[0][0]} fluently. Polyglot vibes.`
         });
     }
 
     if (d.topRepo) {
         slides.push({
-            label: 'Your most-loved project',
+            label: 'Flagship project',
             html: `<div class="big gradient-text">${d.topRepo.name}</div><div class="sub">⭐ ${d.topRepo.stargazers_count.toLocaleString()} stars</div>`,
+            dialogue: `Their pride and joy: ${d.topRepo.name}.`
         });
     }
 
-    // Heatmap slide
     if (d.events && d.events.length > 0) {
         const today = new Date();
         const days = [];
@@ -256,37 +262,79 @@ function buildSlides(d) {
             days.push({ date: dateStr, count });
         }
         const maxCount = Math.max(...days.map(d => d.count), 1);
-        const colors = ['rgba(255,255,255,0.05)', '#3b0764', '#7c3aed', '#a855f7', '#06b6d4'];
+        const colors = ['rgba(255,255,255,0.05)', '#0a4d0a', '#008f11', '#00ff41', '#00ff88'];
         const heatmapHtml = days.map(day => {
             const intensity = day.count === 0 ? 0 : Math.min(Math.ceil((day.count / maxCount) * 4), 4);
             return `<div class="heatmap-cell" style="background: ${colors[intensity]};" title="${day.date}: ${day.count} events"></div>`;
         }).join('');
-
         slides.push({
-            label: 'Your last 90 days',
-            html: `
-        <div class="big gradient-text">The Time Machine</div>
-        <div class="heatmap-grid">${heatmapHtml}</div>
-        <div class="sub" style="margin-top: 1rem;">Every square is a day. Every color is your effort.</div>
-        `,
+            label: 'Activity log',
+            html: `<div class="big gradient-text">90-Day Scan</div><div class="heatmap-grid">${heatmapHtml}</div>`,
+            dialogue: `This is how active they've been over the last 90 days.`
         });
     }
 
     slides.push({
-        label: 'You done a lot of Great Work!',
-        html: `
-        <div class="big gradient-text">Your GitWrapped Card</div>
-        <div class="sub">A snapshot of your developer journey. Download and share it.</div>
-        <div class="final-actions">
-        <button id="download-btn" class="action-btn primary-action">
-            Download My Card
-        </button>
-        <a href="https://github.com/${d.username}" target="_blank" rel="noopener noreferrer" class="action-btn secondary-action">
-            View GitHub Profile
-        </a>
-        </div>
-    `,
+        label: 'Final classification',
+        html: `<div class="big gradient-text">${archetype.title}</div><div style="font-size: 4rem; margin: 1rem 0;">${archetype.emoji}</div><div class="sub">${archetype.desc}</div>`,
+        dialogue: `After analyzing everything, I've classified them as ${archetype.title}.`
     });
+
+    slides.push({
+        label: 'Mission complete',
+        html: `
+            <div class="big gradient-text">Your GitWrapped Card</div>
+            <div class="sub">Download and share it.</div>
+            <div class="final-actions">
+                <button id="download-btn" class="action-btn primary-action">📸 Download</button>
+                <a href="https://github.com/${d.username}" target="_blank" rel="noopener noreferrer" class="action-btn secondary-action">👤 View Profile</a>
+            </div>
+    `,
+        dialogue: `That's a wrap. Save the card if you want.`
+    });
+
+    // if (d.events && d.events.length > 0) {
+    //     const today = new Date();
+    //     const days = [];
+    //     for (let i = 89; i >= 0; i--) {
+    //         const date = new Date(today);
+    //         date.setDate(today.getDate() - i);
+    //         const dateStr = date.toISOString().split('T')[0];
+    //         const count = d.events.filter(e => e.created_at.startsWith(dateStr)).length;
+    //         days.push({ date: dateStr, count });
+    //     }
+    //     const maxCount = Math.max(...days.map(d => d.count), 1);
+    //     const colors = ['rgba(255,255,255,0.05)', '#3b0764', '#7c3aed', '#a855f7', '#06b6d4'];
+    //     const heatmapHtml = days.map(day => {
+    //         const intensity = day.count === 0 ? 0 : Math.min(Math.ceil((day.count / maxCount) * 4), 4);
+    //         return `<div class="heatmap-cell" style="background: ${colors[intensity]};" title="${day.date}: ${day.count} events"></div>`;
+    //     }).join('');
+
+    //     slides.push({
+    //         label: 'Your last 90 days',
+    //         html: `
+    //     <div class="big gradient-text">The Time Machine</div>
+    //     <div class="heatmap-grid">${heatmapHtml}</div>
+    //     <div class="sub" style="margin-top: 1rem;">Every square is a day. Every color is your effort.</div>
+    //     `,
+    //     });
+    // }
+
+    // slides.push({
+    //     label: 'You done a lot of Great Work!',
+    //     html: `
+    //     <div class="big gradient-text">Your GitWrapped Card</div>
+    //     <div class="sub">A snapshot of your developer journey. Download and share it.</div>
+    //     <div class="final-actions">
+    //     <button id="download-btn" class="action-btn primary-action">
+    //         Download My Card
+    //     </button>
+    //     <a href="https://github.com/${d.username}" target="_blank" rel="noopener noreferrer" class="action-btn secondary-action">
+    //         View GitHub Profile
+    //     </a>
+    //     </div>
+    // `,
+    // });
 
     return slides;
 }
@@ -295,7 +343,7 @@ function buildSlides(d) {
 function buildShareCard(d) {
     const topLang = d.topLanguages[0] ? d.topLanguages[0][0] : 'Code';
     const archetype = determineArchetype(d);
-    const shortBio = d.bio ? (d.bio.length > 60 ? d.bio.substring(0, 60) + '...' : d.bio) : 'Building the future, one commit at a time.';
+    // const shortBio = d.bio ? (d.bio.length > 60 ? d.bio.substring(0, 60) + '...' : d.bio) : 'Building the future, one commit at a time.';
 
     shareCard.innerHTML = `
     <div class="share-header">
@@ -311,7 +359,7 @@ function buildShareCard(d) {
         </div>
     </div>
 
-    <div class="share-bio">"${shortBio}"</div>
+    
 
     <div class="share-archetype">
         <div class="share-archetype-emoji">${archetype.emoji}</div>
@@ -320,25 +368,25 @@ function buildShareCard(d) {
 
     <div class="share-stats">
         <div class="share-stat">
-        <div class="share-stat-value">${d.publicRepos}</div>
-        <div class="share-stat-label">Repos</div>
+            <div class="share-stat-value">${d.publicRepos}</div>
+            <div class="share-stat-label">Repos</div>
         </div>
         <div class="share-stat">
-        <div class="share-stat-value">${d.totalStars.toLocaleString()}</div>
-        <div class="share-stat-label">Stars</div>
+            <div class="share-stat-value">${d.totalStars.toLocaleString()}</div>
+            <div class="share-stat-label">Stars</div>
         </div>
         <div class="share-stat">
-        <div class="share-stat-value">${d.followers.toLocaleString()}</div>
-        <div class="share-stat-label">Followers</div>
+            <div class="share-stat-value">${d.followers}</div>
+            <div class="share-stat-label">Followers</div>
         </div>
         <div class="share-stat">
-        <div class="share-stat-value">${d.yearsOnGitHub}</div>
-        <div class="share-stat-label">Years</div>
+            <div class="share-stat-value">${d.yearsOnGitHub}</div>
+            <div class="share-stat-label">Years</div>
         </div>
     </div>
 
     <div class="share-footer">
-        <div>TOP LANG · <strong>${topLang.toUpperCase()}</strong></div>
+        <div>Main Lang: <strong>${topLang}</strong></div>
         <div>GREAT WORK!</div>
     </div>
     `;
@@ -352,13 +400,13 @@ function renderStory() {
     </div>
     `).join('');
 
-    progressDots.innerHTML = slides.map((_, i) =>
-        `<div class="dot ${i === 0 ? 'active' : ''}" data-index="${i}"></div>`
-    ).join('');
+    // progressDots.innerHTML = slides.map((_, i) =>
+    //     `<div class="dot ${i === 0 ? 'active' : ''}" data-index="${i}"></div>`
+    // ).join('');
 
     currentSlide = 0;
-    updateControls();
-    buildShareCard(storyData);
+    updateStoryDialogue();
+    // buildShareCard(storyData);
 }
 
 // DOWNLOAD
@@ -367,20 +415,26 @@ async function downloadShareCard() {
     if (btn) { btn.disabled = true; btn.textContent = '⏳ Rendering...'; }
 
     try {
+        buildShareCard(storyData);
+        await new Promise(resolve => setTimeout(resolve, 200));
+
         const canvas = await html2canvas(shareCard, {
-            backgroundColor: '#06060a',
+            backgroundColor: '#0a0a0a',
             scale: 2,
             useCORS: true,
-            logging: false,
+            allowTaint: true,
+            logging: true
         });
+
         const link = document.createElement('a');
         link.download = `${storyData.username}-gitwrapped.png`;
         link.href = canvas.toDataURL('image/png');
         link.click();
+
     } catch (err) {
         console.error('Download failed:', err);
     } finally {
-        if (btn) { btn.disabled = false; btn.textContent = 'Download My Card'; }
+        if (btn) { btn.disabled = false; btn.textContent = '📸 Download'; }
     }
 }
 
@@ -391,15 +445,32 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// NAVIGATION
 function goToSlide(index) {
+    if (index < 0 || index >= slides.length) return;
+
     document.querySelectorAll('.slide')[currentSlide]?.classList.remove('active');
-    document.querySelectorAll('.dot')[currentSlide]?.classList.remove('active');
     currentSlide = index;
     document.querySelectorAll('.slide')[currentSlide]?.classList.add('active');
-    document.querySelectorAll('.dot')[currentSlide]?.classList.add('active');
-    updateControls();
+
+    updateStoryDialogue();
 }
+
+function updateStoryDialogue() {
+    dialogueText.textContent = slides[currentSlide].dialogue;
+
+    if (currentSlide === 0) {
+        dialoguePrev.classList.add('hidden');
+    } else {
+        dialoguePrev.classList.remove('hidden');
+    }
+
+    if (currentSlide === slides.length - 1) {
+        dialogueNext.classList.add('hidden');
+    } else {
+        dialogueNext.classList.remove('hidden');
+    }
+}
+
 
 function updateControls() {
     prevBtn.disabled = currentSlide === 0;
@@ -423,6 +494,13 @@ async function handleGenerate() {
     generateBtn.disabled = true;
     showScreen('loading');
 
+    // const loadingDialogue = [
+    //     "Hmm, let me check...",
+    //     "Scanning their repos...",
+    //     "Analyzing, uhhh things..."
+    // ];
+    // startDialogue(loadingDialogue);
+
     try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 12000);
@@ -430,6 +508,7 @@ async function handleGenerate() {
         clearTimeout(timeoutId);
         renderStory();
         showScreen('story');
+        characterOverlay.classList.remove('hidden');
     } catch (err) {
         showScreen('input');
         errorMsg.textContent = err.name === 'AbortError'
@@ -442,17 +521,18 @@ async function handleGenerate() {
 
 generateBtn.addEventListener('click', handleGenerate);
 usernameInput.addEventListener('keydown', e => { if (e.key === 'Enter') handleGenerate(); });
-prevBtn.addEventListener('click', () => { if (currentSlide > 0) goToSlide(currentSlide - 1); });
-nextBtn.addEventListener('click', () => { if (currentSlide < slides.length - 1) goToSlide(currentSlide + 1); });
+// prevBtn.addEventListener('click', () => { if (currentSlide > 0) goToSlide(currentSlide - 1); });
+// nextBtn.addEventListener('click', () => { if (currentSlide < slides.length - 1) goToSlide(currentSlide + 1); });
 
 restartBtn.addEventListener('click', () => {
     usernameInput.value = '';
     slideContainer.innerHTML = '';
-    progressDots.innerHTML = '';
+    // progressDots.innerHTML = '';
     errorMsg.textContent = '';
     currentSlide = 0;
     slides = [];
     storyData = null;
+    characterOverlay.classList.add('hidden');
     showScreen('input');
 });
 
