@@ -5,6 +5,8 @@ It includes a heatmap that displays all the users work over the past 90 days, an
 
 This project used vanilla HTML, CSS and JavaScript for frontend development, the GitHub REST API and the html2canvas library for the downloadable share card.
 
+I built this so I could check out as well as share my github profile in a fun and interactive way with other builders.
+
 ## How to run locally
 In case you want to run it locally, here are the steps you should follow:
 1. Clone the Repo
@@ -14,10 +16,10 @@ In case you want to run it locally, here are the steps you should follow:
 
 ## Images
 
-<img width="694" height="613" alt="Screenshot 2026-09-20 143317" src="https://github.com/user-attachments/assets/98411fdf-53e7-4475-b339-72c6bd95ef79" />
+<img width="1324" height="658" alt="Screenshot 2026-10-29 193912" src="https://github.com/user-attachments/assets/f50d66c3-bd37-4fc1-b6b1-030b8c944a0f" />
 
-<img width="795" height="519" alt="Screenshot 2026-09-20 143415" src="https://github.com/user-attachments/assets/a9b6cc37-f1df-4484-b2d1-7f1d57057c4e" />
+<img width="869" height="549" alt="Screenshot 2026-10-29 193418" src="https://github.com/user-attachments/assets/3ca4dd02-894b-498f-8243-3c9853981fd0" />
 
-<img width="416" height="422" alt="Screenshot 2026-09-20 143809" src="https://github.com/user-attachments/assets/f8197c86-613c-41e5-a554-6686e186ac12" />
+<img width="1309" height="601" alt="Screenshot 2026-10-29 125848" src="https://github.com/user-attachments/assets/cdaa22f5-2740-4cef-bcd6-b354a4cabeea" />
 
 ## Try the Live Demo Here: https://git-wrapped-v2.vercel.app/
