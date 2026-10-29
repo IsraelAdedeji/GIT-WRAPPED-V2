@@ -66,7 +66,8 @@ async function fetchUserData(username, signal) {
         username: user.login, name: user.name || user.login, avatar: user.avatar_url,
         bio: user.bio || '', company: user.company || '', location: user.location || '', blog: user.blog || '', twitter: user.twitter_username || '',
         followers: user.followers, publicRepos: user.public_repos,
-        joinYear, yearsOnGitHub, totalStars, topRepo, topLanguages, events,
+        joinYear, yearsOnGitHub, totalStars, topLanguages, events,
+        mostRecentRepo: repos.length > 0 ? repos[0] : null,
     };
 }
 
@@ -151,10 +152,11 @@ function startDialogue(lines, callback) {
 
 function startIntroSequence() {
     const introDialogue = [
-        "Hey there! ......",
-        "Im GitBot .....",
-        "Enter Username",
-        "Lets seeeee!"
+        "Booting up GitBot v1.0...",
+        "Ah, A new user. Welcome to the mainframe.",
+        "I scan Github profiles and extract the raw data.",
+        "Type in a username, hit Generate, and lets see what you're made of.",
+        "Don't keep me waiting, Or else..."
     ];
 
     // dialogueIndex = 0;
@@ -191,7 +193,6 @@ dialoguePrev.addEventListener('click', () => {
     }
 });
 
-// SLIDE BUILDERS
 function buildSlides(d) {
     const archetype = determineArchetype(d);
     const slides = [];
@@ -207,60 +208,102 @@ function buildSlides(d) {
         if (d.bio) bioItems.push(`<div class="bio-text">"${d.bio}"</div>`);
         if (d.company) bioItems.push(`<div class="bio-item">🏢 ${d.company}</div>`);
         if (d.location) bioItems.push(`<div class="bio-item">📍 ${d.location}</div>`);
+
+        let bioDialogue = d.bio ? `Interesting bio. "${d.bio.substring(0, 4, 0)}..."` : "Not much of a talker. But their location gives them away.";
+
         slides.push({
             label: 'Personal file',
             html: `<div class="big gradient-text">Who is ${d.name.split(' ')[0]}?</div><div class="bio-container">${bioItems.join('')}</div>`,
-            dialogue: `Here's what I dug up on them.`
+            dialogue: bioDialogue
         });
     }
+
+    let yearDialogue = "";
+    if (d.yearsOnGitHub <= 1) yearDialogue = "Ah, a fresh face! Still got that new code smell I see.";
+    else if (d.yearsOnGitHub < 5) yearDialogue = `${d.yearsOnGitHub} years on GitHub. They know their way around a terminal.`;
+    else yearDialogue = `Joined in ${d.joinYear}. An absolute veteran. They've definitely seen things...`;
 
     slides.push({
         label: 'Career start',
         html: `<div class="big gradient-text">${d.joinYear}</div><div class="sub">Joined GitHub ${d.yearsOnGitHub} year${d.yearsOnGitHub === 1 ? '' : 's'} ago.</div>`,
-        dialogue: `They've been at this for ${d.yearsOnGitHub} years. Respect.`
+        dialogue: yearDialogue
     });
+
+    let repoDialogue = "";
+    if (d.publicRepos === 0) repoDialogue = "Zero public repos? We seem to have a ghost on our hands.";
+    else if (d.publicRepos < 10) repoDialogue = `${d.publicRepos} public repos. Quality over quantity I see, Respect.`;
+    else if (d.publicRepos < 50) repoDialogue = `${d.publicRepos} repos. They have definitely started more projects than they have finished.`;
+    else repoDialogue = "Over 50 Repos! They don't sleep, they just push to main.";
 
     slides.push({
         label: 'Repository count',
         html: `<div class="big gradient-text">${d.publicRepos}</div><div class="sub">public repositories</div>`,
-        dialogue: `${d.publicRepos} public repos. That's a lot of README files.`
+        dialogue: repoDialogue
     });
+
+    let starDialogue = "";
+    if (d.totalStars === 0) starDialogue = "Not a single star. Brutal. Let's shed a tear for their inbox.";
+    else if (d.totalStars < 10) starDialogue = `${d.totalStars} stars. A humble beginning.`;
+    else if (d.totalStars < 50) starDialogue = `${d.totalStars} starssss! The community is taking notice.`;
+    else starDialogue = `${d.totalStars.toLocaleString()} STARS?! They're famous, get themmmm!`;
 
     slides.push({
         label: 'Community stars',
         html: `<div class="big gradient-text">${d.totalStars.toLocaleString()}</div><div class="sub">stars earned</div>`,
-        dialogue: `The community has given them ${d.totalStars.toLocaleString()} stars.`
+        dialogue: starDialogue
     });
 
     if (d.topLanguages.length > 0) {
         const pills = d.topLanguages.map(([lang, count]) =>
             `<div class="lang-pill">${lang} <span>· ${count}</span></div>`
         ).join('');
+
+        let langDialogue = `${d.topLanguages[0][0]} is their weapon of choice.`;
+        if (d.topLanguages.length > 1) langDialogue += `But they also dabble in ${d.topLanguages[1][0]}.`;
+
         slides.push({
             label: 'Language profile',
             html: `<div class="big gradient-text">${d.topLanguages[0][0]}</div><div style="margin-top: 1.5rem;">${pills}</div>`,
-            dialogue: `They speak ${d.topLanguages[0][0]} fluently. Polyglot vibes.`
+            dialogue: langDialogue
         });
     }
 
-    if (d.topRepo) {
+    // if (d.topRepo) {
+    //     slides.push({
+    //         label: 'Flagship project',
+    //         html: `<div class="big gradient-text">${d.topRepo.name}</div><div class="sub">⭐ ${d.topRepo.stargazers_count.toLocaleString()} stars</div>`,
+    //         dialogue: `Their pride and joy: ${d.topRepo.name}.`
+    //     });
+    // }
+
+    if (d.mostRecentRepo) {
         slides.push({
-            label: 'Flagship project',
-            html: `<div class="big gradient-text">${d.topRepo.name}</div><div class="sub">⭐ ${d.topRepo.stargazers_count.toLocaleString()} stars</div>`,
-            dialogue: `Their pride and joy: ${d.topRepo.name}.`
+            label: 'Latest transmission',
+            html: `<div class="big gradient"> ${d.mostRecentRepo.name}</div><div class="sub">Last updated recently</div>`,
+            dialogue: `This is their latest project: ${d.mostRecentRepo.name}. Still warm from the compiler.`
         });
     }
 
     if (d.events && d.events.length > 0) {
         const today = new Date();
         const days = [];
+        let totalRecentEvents = 0;
+
         for (let i = 89; i >= 0; i--) {
             const date = new Date(today);
             date.setDate(today.getDate() - i);
             const dateStr = date.toISOString().split('T')[0];
             const count = d.events.filter(e => e.created_at.startsWith(dateStr)).length;
+            totalRecentEvents += count;
             days.push({ date: dateStr, count });
         }
+
+        let heatmapDialogue = "";
+        if (totalRecentEvents === 0) heatmapDialogue = "A completely flat heatmap. Are they on vacation?";
+        else if (totalRecentEvents < 10) heatmapDialogue = "Pretty quiet lately. Just a few commits here and there.";
+        else if (totalRecentEvents < 50) heatmapDialogue = "Consistent activity. They're keeping the grind going.";
+        else heatmapDialogue = "Look at all that green! They've been coding non-stop for 90 days.";
+
         const maxCount = Math.max(...days.map(d => d.count), 1);
         const colors = ['rgba(255,255,255,0.05)', '#0a4d0a', '#008f11', '#00ff41', '#00ff88'];
         const heatmapHtml = days.map(day => {
@@ -270,14 +313,14 @@ function buildSlides(d) {
         slides.push({
             label: 'Activity log',
             html: `<div class="big gradient-text">90-Day Scan</div><div class="heatmap-grid">${heatmapHtml}</div>`,
-            dialogue: `This is how active they've been over the last 90 days.`
+            dialogue: heatmapDialogue
         });
     }
 
     slides.push({
         label: 'Final classification',
         html: `<div class="big gradient-text">${archetype.title}</div><div style="font-size: 4rem; margin: 1rem 0;">${archetype.emoji}</div><div class="sub">${archetype.desc}</div>`,
-        dialogue: `After analyzing everything, I've classified them as ${archetype.title}.`
+        dialogue: `My scanners have concluded. They are officially classified as ${archetype.title}.`
     });
 
     slides.push({
@@ -290,7 +333,7 @@ function buildSlides(d) {
                 <a href="https://github.com/${d.username}" target="_blank" rel="noopener noreferrer" class="action-btn secondary-action">👤 View Profile</a>
             </div>
     `,
-        dialogue: `That's a wrap. Save the card if you want.`
+        dialogue: `That's a wrap. Save the card if you want, or go check out their actual profile.`
     });
 
     // if (d.events && d.events.length > 0) {
@@ -494,11 +537,11 @@ async function handleGenerate() {
     generateBtn.disabled = true;
     showScreen('loading');
 
-    // const loadingDialogue = [
-    //     "Hmm, let me check...",
-    //     "Scanning their repos...",
-    //     "Analyzing, uhhh things..."
-    // ];
+    const loadingDialogue = [
+        "Hmm, let me check...",
+        "Scanning their repos...",
+        "Analyzing, uhhh things..."
+    ];
     // startDialogue(loadingDialogue);
 
     try {
@@ -525,16 +568,25 @@ usernameInput.addEventListener('keydown', e => { if (e.key === 'Enter') handleGe
 // nextBtn.addEventListener('click', () => { if (currentSlide < slides.length - 1) goToSlide(currentSlide + 1); });
 
 restartBtn.addEventListener('click', () => {
+    // const farewellDialogue = [
+    //     "Wiping local memory...",
+    //     "System reset complete. Ready for the next target."
+    // ];
     usernameInput.value = '';
+
+    characterOverlay.classList.remove('hidden');
+    // startDialogue(farewellDialogue, () => {
+
     slideContainer.innerHTML = '';
     // progressDots.innerHTML = '';
     errorMsg.textContent = '';
     currentSlide = 0;
     slides = [];
     storyData = null;
-    characterOverlay.classList.add('hidden');
     showScreen('input');
+    characterOverlay.classList.add('hidden');
 });
+// });
 
 document.addEventListener('keydown', e => {
     if (!screens.story.classList.contains('active')) return;

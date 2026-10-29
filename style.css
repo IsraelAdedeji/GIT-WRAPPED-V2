@@ -220,10 +220,14 @@ body {
 }
 
 .character-art {
-    font-size: 7rem;
-    padding: 0 1rem;
-    /* margin-bottom: -15px; */
-    z-index: 2;
+    font-family: 'VT323', monospace;
+    font-size: 8rem;
+    /* padding: 0 1rem; */
+    line-height: 0.8;
+    margin-bottom: 1rem;
+    color: var(--color);
+    text-shadow: 0 0 10px var(--color);
+    /* z-index: 2; */
     animation: floatChar 2s ease-in-out infinite;
 }
 
